@@ -1,0 +1,1729 @@
+<!--debateare 1-->
+</body>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      div {
+        width: 400px;
+        height: 100px;
+        border: 2px solid green
+      }
+    </style>
+  </head>
+  <body>
+      <button id="recordbtn">record</button>
+      <button id="stopbtn">stop</button>
+
+      <div id="soundscontainer">
+          <audio controls id="audioItem"></audio>
+      </div>
+
+
+      <script>
+        let recordbtn=document.getElementById("recordbtn")
+        let stopbtn=document.getElementById("stopbtn")
+        let chunks = [] //will contain the audio
+        let mediarecorder = ""
+
+
+        //check for audio support
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        console.log("getUserMedia supported.");
+        navigator.mediaDevices
+          .getUserMedia(
+            // constraints - only audio needed for this app
+            {
+              audio: true,
+            },
+          )
+
+          // Success callback
+          .then(preparecapture)
+
+          // Error callback
+          .catch((err) => {
+            console.error(`The following getUserMedia error occurred: ${err}`);
+          });
+      } else {
+        console.log("getUserMedia not supported on your browser!");
+      }
+
+
+      function  preparecapture( stream )
+      {
+           mediarecorder = new MediaRecorder(stream)
+           mediarecorder.addEventListener("dataavailable", savechunk)
+          mediarecorder.addEventListener("stop", showAudio)
+      }
+
+      function savechunk( info )
+      {
+        chunks.push(info.data)
+      }
+
+      function startrecord()
+      {
+        mediarecorder.start()
+        console.log(mediarecorder.state); //expect it to show recording
+        console.log("started to record")
+        recordbtn.style.background = "green"
+
+        
+
+      }
+
+      function showAudio()
+      {
+        console.log("showing audio")
+  
+ 
+
+
+        let audio = document.getElementById("audioItem")
+        let blob = new Blob(chunks, {type: "audio/ogg; codecs=opus"})
+        chunks=[]
+        let audiolink = window.URL.createObjectURL(blob)
+
+        audio.src = audiolink
+
+
+      }
+
+
+
+
+      function stoprecord()
+      {
+        mediarecorder.stop()
+        console.log(mediarecorder.state); //expect it to show stopped recording
+        console.log("stoppedrecording")
+        recordbtn.style.background = "red"
+      }
+      
+      recordbtn.addEventListener("click", startrecord)
+      stopbtn.addEventListener("click", stoprecord)
+
+
+      </script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>
+
+<!--debatearea 2-->
+<head>
+    <meta charset="UTF-8">
+    <title>Debate Area</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<style>
+#debate-container {
+height: 400px;
+width: 400px;
+border: 2px solid #000000;
+}
+</style>
+</head>
+<body>
+
+    <div id="debate-container">
+
+    </div>
+    <input type="text" id="user-input" placeholder="Type your argument here..." style="width: 300px; margin-top: 10px;">
+    <button id="submit-debate" style="margin-top: 10px; padding: 10px 20px; font-size: 16px; border-radius: 8px; background-color: #e0574a; color: white; border: none;">Submit Debate</button>
+    <button id="end-debate" style="margin-top: 10px; padding: 10px 20px; font-size: 16px; border-radius: 8px; background-color: #555; color: white; border: none;">End Debate</button>
+<script>
+    let submitdebate = document.getElementById("submit-debate");
+    submitdebate.addEventListener("click", triggerSubmitDebate);
+    async function triggerSubmitDebate() {
+        let userinput = document.getElementById("user-input");
+        //TODO: SEND USER INPUT TO THE SERVER
+        console.log("User input submitted: " + userinput.value);
+        let link=("http://127.0.0.1:5000/debatearea");
+        let response=await fetch(link,{
+            "method":"post",
+            "headers":
+            {
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(
+                {
+                 Text:userinput.value
+
+                })
+
+    })
+
+
+    }
+
+
+</script>
+
+<!--topicarea-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Topic Area</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html, body {
+        height:100%;
+      }
+
+      body
+      {
+        display:flex;
+        flex-direction:column;
+        margin:0;
+        min-height:100vh;
+        background:#0f0f0f;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color:#eee;
+      }
+
+      #tools-container
+      {
+        background:#141414;
+        width:100%;
+        min-height:100vh;
+        display:flex;
+        flex-direction:column;
+      }
+
+      .navbar-row {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:18px 48px;
+        border-bottom:0.5px solid #2a2a2a;
+      }
+
+      .brand { font-weight:600; font-size:17px; color:#fff; }
+      .brand span { color:#e0574a; }
+
+      .navlinks { display:flex; gap:24px; font-size:13px; color:#999; }
+      .navlinks .current { color:#e0857a; }
+
+      .navbtn {
+        background:#e0574a;
+        color:#fff;
+        border:none;
+        padding:8px 16px;
+        border-radius:8px;
+        font-size:13px;
+        font-weight:600;
+      }
+
+      .hero { padding:48px 48px 8px; }
+      .hero h1 {
+        font-size:34px;
+        font-weight:600;
+        margin:0 0 8px;
+        color:#fff;
+        text-align:left;
+      }
+      .hero p { font-size:15px; color:#999; max-width:520px; margin:0; }
+
+      .topics-body {
+        flex:1;
+        padding:32px 48px 12px;
+        max-width:1200px;
+        width:100%;
+        margin:0 auto;
+      }
+
+      .category-label {
+        font-size:12px;
+        text-transform:uppercase;
+        letter-spacing:0.5px;
+        color:#e0857a;
+        margin-bottom:12px;
+      }
+
+      .topic-grid {
+        display:grid;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:10px;
+        margin-bottom:28px;
+      }
+
+      .topic-chip {
+        background:#1a1a1a;
+        border:0.5px solid #2a2a2a;
+        border-radius:10px;
+        padding:14px 16px;
+        font-size:14px;
+        line-height:1.35;
+        color:#eee;
+        text-align:left;
+        cursor:pointer;
+        transition:border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+      }
+      .topic-chip:hover {
+        border-color:#e0574a;
+        background:#211816;
+      }
+      .topic-chip:active {
+        transform:scale(0.98);
+      }
+      .topic-chip.selected {
+        border-color:#e0574a;
+        background:rgba(224,87,74,0.14);
+        color:#fff;
+      }
+
+      .own-topic-row { text-align:center; padding:8px 48px 0; }
+      .own-topic-box {
+        display:inline-block;
+        background:#1a1a1a;
+        border:0.5px solid #2a2a2a;
+        border-radius:10px;
+        padding:14px 20px;
+        font-size:13px;
+        color:#999;
+      }
+      .own-topic-box span { color:#e0857a; font-weight:600; }
+
+      .setup-panel {
+        margin:28px auto 48px;
+        max-width:520px;
+        width:calc(100% - 96px);
+        background:#1a1a1a;
+        border:0.5px solid #2a2a2a;
+        border-radius:12px;
+        padding:22px 24px 26px;
+      }
+
+      .setup-label {
+        font-size:12px;
+        text-transform:uppercase;
+        letter-spacing:0.5px;
+        color:#e0857a;
+        margin-bottom:12px;
+      }
+
+      #typeInput {
+        width:100%;
+        background:#141414;
+        border:0.5px solid #2a2a2a;
+        border-radius:10px;
+        padding:12px 14px;
+        font-size:14px;
+        color:#eee;
+        outline:none;
+      }
+      #typeInput::placeholder {
+        color:#777;
+      }
+      #typeInput:focus {
+        border-color:#e0574a;
+      }
+
+      .stance-row { display:flex; gap:10px; margin-top:14px; }
+
+      #opposerBtn,
+      #proposerBtn
+      {
+        flex:1;
+        border-radius:8px;
+        margin-top:0;
+        border:0.5px solid #2a2a2a;
+        background:#141414;
+        color:#eee;
+        font-size:13px;
+        font-weight:600;
+        padding:10px 18px;
+      }
+      #opposerBtn:hover,
+      #proposerBtn:hover {
+        border-color:#e0574a;
+      }
+      .active {
+        background-color: #e0574a !important;
+        color: #fff !important;
+        border-color:#e0574a !important;
+      }
+
+      #levelSelect {
+        margin-top:14px;
+        width:100%;
+        background:#141414;
+        border:0.5px solid #2a2a2a;
+        border-radius:10px;
+        padding:10px 14px;
+        font-size:13px;
+        color:#eee;
+        outline:none;
+      }
+
+      #submitBtn
+      {
+        margin-top:16px;
+        width:100%;
+        border-radius:8px;
+        border:none;
+        background:#e0574a;
+        color:#fff;
+        font-size:14px;
+        font-weight:600;
+        padding:12px 24px;
+      }
+      #submitBtn:hover {
+        background:#c9483d;
+      }
+      #link
+      {
+        text-decoration: none;
+        color:#e0574a;
+      }
+    </style>
+</head>
+<body>
+    <!---navbar here-->
+<div id="tools-container">
+
+  <div class="navbar-row">
+    <div class="brand">Debate Me <span>AI</span></div>
+    <div class="navlinks">
+      <span><a id="link" href="/how it works">How it works</a></span><span class="current"><a id="link" href="/topicarea">Topics</a></span><span><a id="link" href="/pricingpage">Pricing</a></span><span><a id="link" href="/contactpage.html">Contact</a></span>
+    </div>
+    <button class="navbtn">Start a debate</button>
+  </div>
+
+  <div class="hero">
+    <h1>Pick a topic, or bring your own</h1>
+    <p>Browse by category or type any position below. Nothing here is off limits.</p>
+  </div>
+
+  <div class="topics-body">
+
+    <div class="category-label">Everyday life</div>
+    <div class="topic-grid" id="topicChips">
+      <button type="button" class="topic-chip" id="TopicChip1">Remote work beats office work</button>
+      <button type="button" class="topic-chip" id="TopicChip2">Social media does more harm than good</button>
+      <button type="button" class="topic-chip" id="TopicChip3">College is still worth the cost</button>
+    </div>
+
+    <div class="category-label">Tech and AI</div>
+    <div class="topic-grid">
+      <button type="button" class="topic-chip" id="TopicChip4">AI will create more jobs than it destroys</button>
+      <button type="button" class="topic-chip" id="TopicChip5">Privacy is already dead, stop pretending</button>
+      <button type="button" class="topic-chip" id="TopicChip6">Open source AI is safer than closed</button>
+    </div>
+
+    <div class="category-label">Competition prep</div>
+    <div class="topic-grid" style="margin-bottom:8px">
+      <button type="button" class="topic-chip" id="TopicChip7">Standardized testing should be abolished</button>
+      <button type="button" class="topic-chip" id="TopicChip8">A universal basic income should exist</button>
+      <button type="button" class="topic-chip" id="TopicChip9">Term limits should apply to all offices</button>
+    </div>
+
+  </div>
+
+  <div class="own-topic-row">
+    <div class="own-topic-box">Don't see your topic? <span>Type your own below</span></div>
+  </div>
+
+  <div class="setup-panel">
+    <div class="setup-label">Your topic</div>
+    <form method="POST"action="/confirmarea">
+    <input placeholder="type in a topic" type="text" id="typeInput"name="topic">
+
+    <div class="stance-row">
+      <button type="button" id="opposerBtn">opposer</button>
+      <button type="button" class="active" id="proposerBtn">proposer</button>
+      <input name="Position" id="positioninput"type="hidden"value="proposer">
+    </div>
+
+    <select id="levelSelect"name="level">
+        <option value="beginner">beginner </option>
+        <option value="intermediate">intermediate</option>
+        <option value="advanced">advanced</option>
+    </select>
+
+    <button type="submit" id="submitBtn">Submit</button>
+    </form>
+  </div>
+
+</div>
+    <script>
+    let opposerBtn = document.getElementById("opposerBtn")
+    let proposerBtn = document.getElementById("proposerBtn")
+    let positioninput = document.getElementById("positioninput")
+    let TopicChip1 = document.getElementById("TopicChip1")
+    let TopicChip2 = document.getElementById("TopicChip2")
+    let TopicChip3 = document.getElementById("TopicChip3")
+    let TopicChip4 = document.getElementById("TopicChip4")
+    let TopicChip5 = document.getElementById("TopicChip5")
+    let TopicChip6 = document.getElementById("TopicChip6")
+    let TopicChip7 = document.getElementById("TopicChip7")
+    let TopicChip8 = document.getElementById("TopicChip8")
+    let TopicChip9 = document.getElementById("TopicChip9")
+
+    opposerBtn.addEventListener("click", triggerOpposer)
+    proposerBtn.addEventListener("click", triggerProposer)
+    TopicChip1.addEventListener("click", FillTopic1)
+    TopicChip2.addEventListener("click", FillTopic2)
+    TopicChip3.addEventListener("click", FillTopic3)
+    TopicChip4.addEventListener("click", FillTopic4)
+    TopicChip5.addEventListener("click", FillTopic5)
+    TopicChip6.addEventListener("click", FillTopic6)
+    TopicChip7.addEventListener("click", FillTopic7)
+    TopicChip8.addEventListener("click", FillTopic8)
+    TopicChip9.addEventListener("click", FillTopic9)
+
+    function FillTopic1(){
+        let typeInput = document.getElementById("typeInput")
+        typeInput.value ="Remote work beats office work"
+    }
+    function FillTopic2(){
+        let typeInput = document.getElementById("typeInput")
+        typeInput.value ="Climate change is the most pressing issue of our time"
+    }
+    function FillTopic3(){
+        let typeInput = document.getElementById("typeInput")
+        typeInput.value ="Social media has more negative than positive effects on society"
+    }
+    function FillTopic4(){
+        let typeInput = document.getElementById("typeInput")
+        typeInput.value ="The death penalty is a necessary deterrent"
+    }
+    function FillTopic5(){
+        let typeInput = document.getElementById("typeInput")
+        typeInput.value ="Universal healthcare should be a fundamental right"
+    }
+    function FillTopic6(){
+        let typeInput = document.getElementById("typeInput")
+        typeInput.value ="Colleges should be free for all students"
+    }
+    function FillTopic7(){
+        let typeInput = document.getElementById("typeInput")
+        typeInput.value ="Standardized testing should be abolished"
+    }
+    function FillTopic8(){
+        let typeInput = document.getElementById("typeInput")
+        typeInput.value ="A universal basic income should exist"
+    }
+    function FillTopic9(){
+        let typeInput = document.getElementById("typeInput")
+        typeInput.value ="Term limits should apply to all offices"
+    }
+
+    function triggerOpposer(){
+        opposerBtn.classList.add("active")
+        proposerBtn.classList.remove("active")
+        positioninput.value = "opposer"
+    }
+     function triggerProposer(){
+    proposerBtn.classList.add("active")
+    opposerBtn.classList.remove("active")
+    positioninput.value = "proposer"
+    }
+    </script>
+</body>
+</html>
+<!--pricingpage-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pricing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/dist/tabler-icons.min.css">
+<style>
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+
+  body {
+    margin:0;
+    min-height:100vh;
+    background:#0a0a0a;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:#eee;
+  }
+
+  #page {
+    width:100%;
+    min-height:100vh;
+    background:#141414;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* navbar */
+  .navbar-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 48px;
+    border-bottom:0.5px solid #2a2a2a;
+  }
+
+  .brand { font-weight:600; font-size:17px; color:#fff; text-decoration:none; }
+  .brand span { color:#e0574a; }
+
+  .navlinks { display:flex; gap:24px; font-size:13px; color:#999; }
+  .navlinks a { color:#999; text-decoration:none; }
+  .navlinks .current { color:#da6255; }
+
+  .navbtn {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+  }
+
+  .navbtn:hover { background:#c9483d; }
+
+  /* hero */
+  .hero {
+    text-align:center;
+    padding:64px 28px 8px;
+  }
+
+  .eyebrow-pill {
+    display:inline-block;
+    background:#2a1a18;
+    color:#e0857a;
+    font-size:12px;
+    padding:4px 12px;
+    border-radius:20px;
+    margin-bottom:16px;
+  }
+
+  .hero h1 {
+    font-size:26px;
+    font-weight:600;
+    margin:0 0 8px;
+    color:#eee;
+  }
+
+  .hero p {
+    font-size:14px;
+    color:#999;
+    max-width:420px;
+    margin:0 auto;
+  }
+
+  /* pricing cards */
+  .plans {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:16px;
+    padding:48px 48px 8px;
+    max-width:900px;
+    width:100%;
+    margin:0 auto;
+    flex:1;
+  }
+
+  .plan-card {
+    background:#1a1a1a;
+    border-radius:12px;
+    border:0.5px solid #2a2a2a;
+    padding:22px 18px;
+    text-align:center;
+    filter:grayscale(0.3);
+    opacity:0.75;
+    position:relative;
+  }
+
+  .plan-card.featured {
+    border:2px solid #e0574a;
+  }
+
+  .popular-tag {
+    position:absolute;
+    top:-11px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#e0574a;
+    color:#fff;
+    font-size:11px;
+    padding:3px 10px;
+    border-radius:10px;
+    font-weight:600;
+  }
+
+  .plan-name {
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:6px;
+    color:#eee;
+  }
+
+  .plan-price {
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:14px;
+    color:#eee;
+  }
+
+  .plan-features {
+    font-size:12px;
+    color:#777;
+    line-height:1.6;
+  }
+
+  /* cta */
+  .pricing-cta {
+    text-align:center;
+    padding:32px 28px 64px;
+  }
+
+  .notify-btn {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:12px 26px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+  }
+
+  .notify-btn:hover { background:#c9483d; }
+
+  @media (max-width:700px) {
+    .navlinks { display:none; }
+    .plans { grid-template-columns:1fr; }
+  }
+  #link
+  {
+    text-decoration: none;
+    color:#e0574a;
+  }
+</style>
+</head>
+<body>
+
+<div id="page">
+
+  <div class="navbar-row">
+    <a href="index.html" class="brand">Debate Me <span>AI</span></a>
+    <div class="navlinks">
+      <a href="/how it works" id="link">How it works</a>
+      <a href="/topicsarea" id="link">Topics</a>
+      <a href="/pricingpage" class="current">Pricing</a>
+      <a href="/contact" id="link">Contact</a>
+    </div>
+    <a href="/topicarea" class="navbtn">Start a debate</a>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow-pill">Coming soon</div>
+    <h1>Pricing is still being sharpened</h1>
+    <p>Debate Me AI is free to try while it's in early access. Paid plans launch soon.</p>
+  </div>
+
+  <div class="plans">
+    <div class="plan-card">
+      <div class="plan-name">Free</div>
+      <div class="plan-price">$0</div>
+      <div class="plan-features">3 debates a day<br>Standard intensity<br>Basic verdicts</div>
+    </div>
+
+    <div class="plan-card featured">
+      <div class="popular-tag">Most popular</div>
+      <div class="plan-name">Sparring</div>
+      <div class="plan-price">TBD</div>
+      <div class="plan-features">Unlimited debates<br>All intensity levels<br>Full verdict history</div>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-name">Teams</div>
+      <div class="plan-price">TBD</div>
+      <div class="plan-features">For debate clubs<br>Shared topic decks<br>Coach dashboard</div>
+    </div>
+  </div>
+
+  <div class="pricing-cta">
+    <button class="notify-btn">Get notified at launch</button>
+  </div>
+
+</div>
+
+</body>
+</html>
+<!--howitworks-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>How It Works</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/dist/tabler-icons.min.css">
+<style>
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+
+  body {
+    margin:0;
+    min-height:100vh;
+    background:#0a0a0a;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:#eee;
+  }
+
+  #page {
+    width:100%;
+    min-height:100vh;
+    background:#141414;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* navbar */
+  .navbar-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 48px;
+    border-bottom:0.5px solid #2a2a2a;
+  }
+
+  .brand { font-weight:600; font-size:17px; color:#fff; text-decoration:none; }
+  .brand span { color:#e0574a; }
+
+  .navlinks { display:flex; gap:24px; font-size:13px; color:#999; }
+  .navlinks a { color:#999; text-decoration:none; }
+  .navlinks .current { color:#e0857a; }
+
+  .navbtn {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+  }
+
+  .navbtn:hover { background:#c9483d; }
+
+  /* hero */
+  .hero {
+    text-align:center;
+    padding:56px 28px 12px;
+  }
+
+  .hero h1 {
+    font-size:26px;
+    font-weight:600;
+    margin:0 0 8px;
+    color:#eee;
+  }
+
+  .hero p {
+    font-size:14px;
+    color:#999;
+    max-width:420px;
+    margin:0 auto;
+  }
+
+  /* steps */
+  .steps-wrap {
+    max-width:560px;
+    width:100%;
+    margin:0 auto;
+    padding:32px 20px 64px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+
+  .step {
+    display:flex;
+    gap:18px;
+    padding-bottom:28px;
+    position:relative;
+  }
+
+  .step:last-child { padding-bottom:0; }
+
+  .step-num {
+    flex-shrink:0;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#2a1a18;
+    color:#e0857a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+    font-size:14px;
+    z-index:1;
+  }
+
+  .step-num.final {
+    background:#14201c;
+    color:#7ad9b0;
+  }
+
+  .step-line {
+    position:absolute;
+    left:17px;
+    top:36px;
+    bottom:-8px;
+    width:1px;
+    background:#2a2a2a;
+  }
+
+  .step h3 {
+    font-size:15px;
+    font-weight:600;
+    margin:0 0 4px;
+    color:#eee;
+  }
+
+  .step p {
+    font-size:13px;
+    color:#999;
+    line-height:1.6;
+    margin:0;
+  }
+
+  @media (max-width:700px) {
+    .navlinks { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="page">
+
+  <div class="navbar-row">
+    <a href="index.html" class="brand">Debate Me <span>AI</span></a>
+    <div class="navlinks">
+      <a href="how-it-works.html" class="current">How it works</a>
+      <a href="topics.html">Topics</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <a href="topics.html" class="navbtn">Start a debate</a>
+  </div>
+
+  <div class="hero">
+    <h1>How it works</h1>
+    <p>Four steps between a half-formed opinion and an argument that actually holds up.</p>
+  </div>
+
+  <div class="steps-wrap">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-line"></div>
+      <div>
+        <h3>State your position</h3>
+        <p>Type what you actually believe, in your own words. Any topic works, from casual takes to competition prep.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-line"></div>
+      <div>
+        <h3>Pick the intensity</h3>
+        <p>Gentle for a first try, firm but fair for regular practice, or relentless if you want a real fight.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-line"></div>
+      <div>
+        <h3>Go back and forth</h3>
+        <p>It argues the strongest opposite case it can. You defend, it pushes back again. No agreeing, no letting you coast.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num final">4</div>
+      <div>
+        <h3>Get your verdict</h3>
+        <p>End the debate anytime for an honest score: your strongest point, your weakest, and one way to argue it better next time.</p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
+<!--homepage-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Debate Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/dist/tabler-icons.min.css">
+<style>
+  * { box-sizing:border-box; }
+
+  html, body { height:100%; }
+
+  body {
+    margin:0;
+    min-height:100vh;
+    background:#0a0a0a;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:#eee;
+  }
+
+  #page {
+    width:100%;
+    min-height:100vh;
+    background:#141414;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* navbar */
+  .navbar-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 48px;
+    border-bottom:0.5px solid #2a2a2a;
+  }
+
+  .brand { font-weight:600; font-size:17px; color:#fff; }
+  .brand span { color:#e0574a; }
+
+  .navlinks { display:flex; gap:24px; font-size:13px; color:#999; }
+
+  .navbtn {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+  }
+
+  /* hero */
+  .hero {
+    text-align:center;
+    padding:80px 28px 48px;
+  }
+
+  .eyebrow-pill {
+    display:inline-block;
+    background:#2a1a18;
+    color:#e0857a;
+    font-size:12px;
+    padding:4px 12px;
+    border-radius:20px;
+    margin-bottom:16px;
+  }
+
+  .hero h1 {
+    font-size:34px;
+    font-weight:600;
+    line-height:1.25;
+    max-width:520px;
+    margin:0 auto 12px;
+    color:#eee;
+  }
+
+  .hero p {
+    font-size:15px;
+    color:#999;
+    max-width:440px;
+    margin:0 auto 28px;
+  }
+
+  .hero-cta {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:12px 26px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+  }
+
+  .hero-cta i { font-size:16px; vertical-align:-2px; margin-left:4px; }
+
+  /* sparring session */
+  .sparring {
+    background:#1a1a1a;
+    margin:0 auto 28px;
+    max-width:640px;
+    width:calc(100% - 96px);
+    border-radius:12px;
+    border:0.5px solid #2a2a2a;
+    padding:20px 24px;
+  }
+
+  .sparring-label {
+    font-size:11px;
+    color:#777;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:10px;
+  }
+
+  .bubble {
+    border-radius:10px;
+    padding:12px 14px;
+    margin-bottom:10px;
+    font-size:14px;
+    max-width:85%;
+  }
+
+  .bubble-ai {
+    background:#2a1414;
+    border:1px solid #4a1f1f;
+  }
+
+  .bubble-you {
+    background:#1c2a1c;
+    border:1px solid #2f4a2f;
+    margin-left:auto;
+    margin-bottom:0;
+  }
+
+  .bubble-tag {
+    font-size:11px;
+    margin-bottom:2px;
+  }
+
+  .bubble-ai .bubble-tag { color:#c78; }
+  .bubble-you .bubble-tag { color:#8c8; }
+
+  /* feature cards */
+  .features {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:16px;
+    padding:0 48px 64px;
+    max-width:1000px;
+    width:100%;
+    margin:0 auto;
+    flex:1;
+  }
+
+  .feature-card {
+    background:#1a1a1a;
+    border-radius:12px;
+    padding:18px;
+    border:0.5px solid #2a2a2a;
+  }
+
+  .feature-card i {
+    font-size:20px;
+    color:#e0857a;
+  }
+
+  .feature-card h3 {
+    font-size:14px;
+    font-weight:600;
+    margin:10px 0 4px;
+    color:#eee;
+  }
+
+  .feature-card p {
+    font-size:13px;
+    color:#999;
+    margin:0;
+  }
+  #link
+  {
+    text-decoration: none;
+    color:#e0574a;
+  }
+</style>
+</head>
+<body>
+
+<div id="page">
+
+  <div class="navbar-row">
+    <div class="brand">Debate Me <span>AI</span></div>
+    <div class="navlinks">
+      <span><a id="link" href="/how it works">How it works</a></span><span><a id="link" href="/topicarea">Topics</a></span><span><a id="link" href="/pricingpage">Pricing</a></span><span><a id="link" href="/contactpage">Contact</a></span>
+    </div>
+    <button class="navbtn">Start a debate</button>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow-pill">For debaters, by design</div>
+    <h1>Sharpen your argument. It won't let you off easy.</h1>
+    <p>State a position. Debate Me AI argues the opposite, hard. Defend it, and get scored when you're done.</p>
+    <button class="hero-cta">Debate me <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+
+  <div class="sparring">
+    <div class="sparring-label">Live sparring session</div>
+    <div class="bubble bubble-ai">
+      <div class="bubble-tag">Debate Me AI</div>
+      Remote work sounds great until collaboration quality drops without shared physical context. What's your evidence it scales past small teams?
+    </div>
+    <div class="bubble bubble-you">
+      <div class="bubble-tag">You</div>
+      Async documentation replaces most shared context needs...
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="feature-card">
+      <i class="ti ti-target-arrow" aria-hidden="true"></i>
+      <h3>Pick any position</h3>
+      <p>From casual takes to competition prep.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-flame" aria-hidden="true"></i>
+      <h3>Choose the intensity</h3>
+      <p>Gentle for beginners, relentless for pros.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-report" aria-hidden="true"></i>
+      <h3>Get a verdict</h3>
+      <p>Honest scoring on your strongest and weakest points.</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
+<!--contactpage-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/dist/tabler-icons.min.css">
+<style>
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+
+  body {
+    margin:0;
+    min-height:100vh;
+    background:#0a0a0a;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:#eee;
+  }
+
+  #page {
+    width:100%;
+    min-height:100vh;
+    background:#141414;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* navbar */
+  .navbar-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 48px;
+    border-bottom:0.5px solid #2a2a2a;
+  }
+
+  .brand { font-weight:600; font-size:17px; color:#fff; text-decoration:none; }
+  .brand span { color:#e0574a; }
+
+  .navlinks { display:flex; gap:24px; font-size:13px; color:#999; }
+  .navlinks a { color:#999; text-decoration:none; }
+  .navlinks .current { color:#e0857a; }
+
+  .navbtn {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+  }
+
+  .navbtn:hover { background:#c9483d; }
+
+  /* hero */
+  .hero {
+    text-align:center;
+    padding:56px 28px 8px;
+  }
+
+  .hero h1 {
+    font-size:26px;
+    font-weight:600;
+    margin:0 0 8px;
+    color:#eee;
+  }
+
+  .hero p {
+    font-size:14px;
+    color:#999;
+    max-width:420px;
+    margin:0 auto;
+  }
+
+  /* form */
+  .form-wrap {
+    max-width:480px;
+    width:100%;
+    margin:0 auto;
+    padding:36px 20px 20px;
+    flex:1;
+  }
+
+  .field { margin-bottom:14px; }
+
+  .field label {
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:#ccc;
+    margin-bottom:6px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width:100%;
+    background:#1c1c1c;
+    border:1px solid #333;
+    border-radius:10px;
+    padding:11px 14px;
+    font-size:14px;
+    color:#eee;
+    outline:none;
+    font-family:inherit;
+    resize:none;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder { color:#666; }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus { border-color:#e0574a; }
+
+  .field select {
+    appearance:none;
+    -webkit-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+    padding-right:36px;
+  }
+
+  .field textarea {
+    height:90px;
+  }
+
+  .send-btn {
+    width:100%;
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:12px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+  }
+
+  .send-btn:hover { background:#c9483d; }
+
+  /* footer contact row */
+  .contact-footer {
+    display:flex;
+    justify-content:center;
+    gap:32px;
+    padding:28px 28px 48px;
+    border-top:0.5px solid #2a2a2a;
+    margin-top:24px;
+  }
+
+  .contact-item { text-align:center; }
+
+  .contact-item i {
+    font-size:18px;
+    color:#e0857a;
+  }
+
+  .contact-item div {
+    font-size:12px;
+    color:#999;
+    margin-top:6px;
+  }
+
+  @media (max-width:700px) {
+    .navlinks { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="page">
+
+  <div class="navbar-row">
+    <a href="index.html" class="brand">Debate Me <span>AI</span></a>
+    <div class="navlinks">
+      <a href="index.html#how-it-works">How it works</a>
+      <a href="topics.html">Topics</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="contact.html" class="current">Contact</a>
+    </div>
+    <a href="topics.html" class="navbtn">Start a debate</a>
+  </div>
+
+  <div class="hero">
+    <h1>Get in touch</h1>
+    <p>Bug reports, feedback, partnership questions, debate club inquiries, all welcome.</p>
+  </div>
+
+  <div class="form-wrap">
+    <form>
+      <div class="field">
+        <label for="contact-name">Name</label>
+        <input type="text" id="contact-name" placeholder="Your name">
+      </div>
+      <div class="field">
+        <label for="contact-email">Email</label>
+        <input type="email" id="contact-email" placeholder="name@email.com">
+      </div>
+      <div class="field">
+        <label for="contact-topic">What's this about</label>
+        <select id="contact-topic">
+          <option>Feedback</option>
+          <option>Bug report</option>
+          <option>Partnership</option>
+          <option>Debate club inquiry</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="contact-message">Message</label>
+        <textarea id="contact-message" placeholder="Tell us what's on your mind..."></textarea>
+      </div>
+      <button type="submit" class="send-btn">Send message</button>
+    </form>
+  </div>
+
+  <div class="contact-footer">
+    <div class="contact-item">
+      <i class="ti ti-mail" aria-hidden="true"></i>
+      <div>hello@debateme.ai</div>
+    </div>
+    <div class="contact-item">
+      <i class="ti ti-brand-x" aria-hidden="true"></i>
+      <div>@debatemeai</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
+<!--confirmare-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Area</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <style>
+      * {
+        box-sizing:border-box;
+      }
+
+      body {
+        margin:0;
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:40px 20px;
+        background:#0f0f0f;
+        background-image:
+          radial-gradient(circle at 15% 20%, rgba(224,87,74,0.10), transparent 40%),
+          radial-gradient(circle at 85% 80%, rgba(224,87,74,0.07), transparent 40%);
+        font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color:#eee;
+      }
+
+      .ticket {
+        position:relative;
+        max-width:440px;
+        width:100%;
+        background:#141414;
+        border:0.5px solid #2a2a2a;
+        border-radius:18px;
+        box-shadow:0px 0px 30px rgba(0,0,0,0.6);
+        overflow:hidden;
+      }
+
+      .ticket-top {
+        padding:30px 32px 26px;
+        text-align:center;
+      }
+
+      .kicker {
+        font-size:11px;
+        text-transform:uppercase;
+        letter-spacing:1.5px;
+        color:#e0857a;
+        margin-bottom:14px;
+      }
+
+      h1 {
+        font-size:22px;
+        font-weight:700;
+        line-height:1.35;
+        color:#fff;
+        margin:0 0 26px;
+      }
+
+      .vs-row {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:14px;
+        margin-bottom:8px;
+      }
+
+      .stance-pill {
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        background:rgba(224,87,74,0.14);
+        border:0.5px solid #e0574a;
+        color:#fff;
+        font-size:13px;
+        font-weight:700;
+        letter-spacing:0.3px;
+        text-transform:uppercase;
+        padding:9px 20px;
+        border-radius:999px;
+      }
+
+      .stance-pill .dot {
+        width:7px;
+        height:7px;
+        border-radius:50%;
+        background:#e0574a;
+        box-shadow:0 0 8px #e0574a;
+      }
+
+      .vs-label {
+        font-size:11px;
+        letter-spacing:1px;
+        color:#555;
+        font-weight:700;
+      }
+
+      .ai-side {
+        font-size:13px;
+        color:#777;
+        font-weight:600;
+        padding:9px 20px;
+        border:0.5px dashed #333;
+        border-radius:999px;
+      }
+
+      .perforation {
+        position:relative;
+        height:0;
+        border-top:1px dashed #2a2a2a;
+        margin:0 32px;
+      }
+
+      .perforation::before,
+      .perforation::after {
+        content:"";
+        position:absolute;
+        top:-11px;
+        width:22px;
+        height:22px;
+        background:#0f0f0f;
+        border-radius:50%;
+      }
+
+      .perforation::before { left:-43px; }
+      .perforation::after { right:-43px; }
+
+      .ticket-bottom {
+        padding:24px 32px 32px;
+      }
+
+      .meta-row {
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:12px 0;
+        border-bottom:0.5px solid #212121;
+      }
+
+      .meta-row:last-of-type {
+        border-bottom:none;
+      }
+
+      .meta-label {
+        font-size:11px;
+        text-transform:uppercase;
+        letter-spacing:0.8px;
+        color:#666;
+      }
+
+      .meta-value {
+        font-size:13px;
+        font-weight:600;
+        color:#eee;
+      }
+
+      .level-badge {
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        font-size:12px;
+        font-weight:700;
+        text-transform:capitalize;
+        color:#fff;
+        background:#1a1a1a;
+        border:0.5px solid #2a2a2a;
+        padding:5px 12px;
+        border-radius:8px;
+      }
+
+      .level-bars {
+        display:flex;
+        gap:2px;
+        align-items:flex-end;
+      }
+
+      .level-bars span {
+        width:3px;
+        border-radius:2px;
+        background:#3a3a3a;
+      }
+
+      .level-bars span:nth-child(1) { height:6px; }
+      .level-bars span:nth-child(2) { height:9px; }
+      .level-bars span:nth-child(3) { height:12px; }
+
+      .level-badge.advanced .level-bars span {
+        background:#e0574a;
+      }
+
+      button {
+        margin-top:26px;
+        width:100%;
+        border:none;
+        border-radius:10px;
+        background:#e0574a;
+        color:#fff;
+        font-size:14.5px;
+        font-weight:700;
+        letter-spacing:0.2px;
+        padding:14px 20px;
+        cursor:pointer;
+        transition:background 0.15s ease, transform 0.1s ease;
+      }
+
+      button:hover {
+        background:#c9483d;
+      }
+
+      button:active {
+        transform:scale(0.98);
+      }
+
+      .fine-print {
+        text-align:center;
+        font-size:11px;
+        color:#555;
+        margin-top:14px;
+      }
+      a
+      {
+        text-decoration:none;
+        color:white;
+      }
+    </style>
+
+<div class="ticket">
+  <div class="ticket-top">
+    <div class="kicker">Debate Me <span style="color:#e0574a">AI</span> &middot; Ready to begin</div>
+    <h1>{{ info['topic']}}</h1>
+    <div class="vs-row">
+      <span class="stance-pill"><span class="dot"></span>{{info['Position']}}</span>
+      <span class="vs-label">VS</span>
+      <span class="ai-side">AI</span>
+    </div>
+  </div>
+
+  <div class="perforation"></div>
+
+  <div class="ticket-bottom">
+    <div class="meta-row">
+      <span class="meta-label">Your position</span>
+      <span class="meta-value">{{info['Position']}}</span>
+    </div>
+    <div class="meta-row">
+      <span class="meta-label">Difficulty</span>
+      <span class="level-badge advanced">
+        {{info['level']}}
+        <span class="level-bars"><span></span><span></span><span></span></span>
+      </span>
+    </div>
+    <div class="meta-row">
+      <span class="meta-label">Format</span>
+      <span class="meta-value">Live, 1v1</span>
+    </div>
+
+    <button><a href="/debatearea">Confirm and start debate</a></button>
+    <button><a href="/topicarea">Change topic</a></button>
+    <div class="fine-print">You can switch sides or topic anytime before it starts</div>
+  </div>
+</div>
+
+</body>
+</html>
+AQ.Ab8RN6KNNyr-FrxUxTwAEC3eXxYvxnYsonYPxPMbdOQScOJGvQ

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Debate Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/dist/tabler-icons.min.css">
+<style>
+  * { box-sizing:border-box; }
+
+  html, body { height:100%; }
+
+  body {
+    margin:0;
+    min-height:100vh;
+    background:#0a0a0a;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:#eee;
+  }
+
+  #page {
+    width:100%;
+    min-height:100vh;
+    background:#141414;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* navbar */
+  .navbar-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 48px;
+    border-bottom:0.5px solid #2a2a2a;
+  }
+
+  .brand { font-weight:600; font-size:17px; color:#fff; text-decoration:none; transition:opacity 0.2s ease; }
+  .brand:hover { opacity:0.8; }
+  .brand span { color:#e0574a; }
+
+  .navlinks { display:flex; gap:24px; font-size:13px; color:#999; }
+  .navlinks a { color:#999; text-decoration:none; transition:color 0.2s ease; }
+  .navlinks a:hover { color:#e0857a; }
+  .navlinks .current { color:#e0857a; font-weight:500; }
+  .navlinks a:focus { outline:2px solid #e0574a; border-radius:4px; }
+
+  .navbtn {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background 0.2s ease, transform 0.1s ease;
+  }
+  .navbtn:hover { background:#c9483d; }
+  .navbtn:active { transform:scale(0.98); }
+  .navbtn:focus { outline:2px solid #e0857a; outline-offset:2px; }
+
+  /* hero */
+  .hero {
+    text-align:center;
+    padding:80px 28px 48px;
+  }
+
+  .eyebrow-pill {
+    display:inline-block;
+    background:#2a1a18;
+    color:#e0857a;
+    font-size:12px;
+    padding:4px 12px;
+    border-radius:20px;
+    margin-bottom:16px;
+  }
+
+  .hero h1 {
+    font-size:34px;
+    font-weight:600;
+    line-height:1.25;
+    max-width:520px;
+    margin:0 auto 12px;
+    color:#eee;
+  }
+
+  .hero p {
+    font-size:15px;
+    color:#999;
+    max-width:440px;
+    margin:0 auto 28px;
+  }
+
+  .hero-cta {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:12px 26px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background 0.2s ease, transform 0.1s ease;
+  }
+  .hero-cta:hover { background:#c9483d; }
+  .hero-cta:active { transform:scale(0.98); }
+  .hero-cta:focus { outline:2px solid #e0857a; outline-offset:2px; }
+
+  .hero-cta i { font-size:16px; vertical-align:-2px; margin-left:4px; }
+
+  /* sparring session */
+  .sparring {
+    background:#1a1a1a;
+    margin:0 auto 28px;
+    max-width:640px;
+    width:calc(100% - 96px);
+    border-radius:12px;
+    border:0.5px solid #2a2a2a;
+    padding:20px 24px;
+  }
+
+  .sparring-label {
+    font-size:11px;
+    color:#777;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:10px;
+  }
+
+  .bubble {
+    border-radius:10px;
+    padding:12px 14px;
+    margin-bottom:10px;
+    font-size:14px;
+    max-width:85%;
+  }
+
+  .bubble-ai {
+    background:#2a1414;
+    border:1px solid #4a1f1f;
+  }
+
+  .bubble-you {
+    background:#1c2a1c;
+    border:1px solid #2f4a2f;
+    margin-left:auto;
+    margin-bottom:0;
+  }
+
+  .bubble-tag {
+    font-size:11px;
+    margin-bottom:2px;
+  }
+
+  .bubble-ai .bubble-tag { color:#c78; }
+  .bubble-you .bubble-tag { color:#8c8; }
+
+  /* feature cards */
+  .features {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:16px;
+    padding:0 48px 64px;
+    max-width:1000px;
+    width:100%;
+    margin:0 auto;
+    flex:1;
+  }
+
+  .feature-card {
+    background:#1a1a1a;
+    border-radius:12px;
+    padding:18px;
+    border:0.5px solid #2a2a2a;
+    transition:border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  }
+  .feature-card:hover { 
+    border-color:#e0574a;
+    background:#211816;
+    transform:translateY(-2px);
+  }
+  .feature-card:focus-within { outline:2px solid #e0857a; outline-offset:2px; }
+
+  .feature-card i {
+    font-size:20px;
+    color:#e0857a;
+  }
+
+  .feature-card h3 {
+    font-size:14px;
+    font-weight:600;
+    margin:10px 0 4px;
+    color:#eee;
+  }
+
+  .feature-card p {
+    font-size:13px;
+    color:#999;
+    margin:0;
+  }
+  .navlink
+  {
+    text-decoration:none;
+    color:inherit;
+    transition:color 0.2s ease;
+  }
+  .navlink:hover { color:#e0857a; }
+  .navlink:focus { outline:2px solid #e0574a; border-radius:4px; }
+
+  .hero-cta-link {
+    display:inline-block;
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:12px 26px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+    transition:background 0.2s ease, transform 0.1s ease;
+  }
+  .hero-cta-link:hover { background:#c9483d; }
+  .hero-cta-link:active { transform:scale(0.98); }
+  .hero-cta-link:focus { outline:2px solid #e0857a; outline-offset:2px; }
+  .hero-cta-link i { font-size:16px; vertical-align:-2px; margin-left:4px; }
+</style>
+</head>
+<body>
+
+<div id="page">
+
+  <div class="navbar-row">
+    <a href="/" class="brand">Debate Me <span>AI</span></a>
+    <div class="navlinks">
+      <a href="/" class="navlink current">Homepage</a><a href="/howitworks" class="navlink">How it works</a><a href="/topicarea" class="navlink">Topics</a><a href="/pricingpage" class="navlink">Pricing</a><a href="/contactpage" class="navlink">Contact</a>
+    </div>
+    <a href="/topicarea" class="navbtn">Start a debate</a>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow-pill">For debaters, by design</div>
+    <h1>Sharpen your argument. It won't let you off easy.</h1>
+    <p>State a position. Debate Me AI argues the opposite, hard. Defend it, and get scored when you're done.</p>
+    <a href="/topicarea" class="hero-cta-link">Debate me <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+  </div>
+
+  <div class="sparring">
+    <div class="sparring-label">Live sparring session</div>
+    <div class="bubble bubble-ai">
+      <div class="bubble-tag">Debate Me AI</div>
+      Remote work sounds great until collaboration quality drops without shared physical context. What's your evidence it scales past small teams?
+    </div>
+    <div class="bubble bubble-you">
+      <div class="bubble-tag">You</div>
+      Async documentation replaces most shared context needs...
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="feature-card">
+      <i class="ti ti-target-arrow" aria-hidden="true"></i>
+      <h3>Pick any position</h3>
+      <p>From casual takes to competition prep.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-flame" aria-hidden="true"></i>
+      <h3>Choose the intensity</h3>
+      <p>Gentle for beginners, relentless for pros.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-report" aria-hidden="true"></i>
+      <h3>Get a verdict</h3>
+      <p>Honest scoring on your strongest and weakest points.</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

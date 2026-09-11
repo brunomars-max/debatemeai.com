@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pricing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/dist/tabler-icons.min.css">
+<style>
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+
+  body {
+    margin:0;
+    min-height:100vh;
+    background:#0a0a0a;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:#eee;
+  }
+
+  #page {
+    width:100%;
+    min-height:100vh;
+    background:#141414;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* navbar */
+  .navbar-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 48px;
+    border-bottom:0.5px solid #2a2a2a;
+  }
+
+  .brand { font-weight:600; font-size:17px; color:#fff; text-decoration:none; transition:opacity 0.2s ease; }
+  .brand:hover { opacity:0.8; }
+  .brand:focus { outline:2px solid #e0857a; border-radius:4px; }
+  .brand span { color:#e0574a; }
+
+  .navlinks { display:flex; gap:24px; font-size:13px; color:#999; }
+  .navlinks a { color:#999; text-decoration:none; transition:color 0.2s ease; }
+  .navlinks a:hover { color:#e0857a; }
+  .navlinks .current { color:#e0857a; font-weight:500; }
+  .navlinks a:focus { outline:2px solid #e0574a; border-radius:4px; }
+
+  .navbtn {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+    transition:background 0.2s ease, transform 0.1s ease;
+    display:inline-block;
+  }
+
+  .navbtn:hover { background:#c9483d; }
+  .navbtn:active { transform:scale(0.98); }
+  .navbtn:focus { outline:2px solid #e0857a; outline-offset:2px; }
+
+  /* hero */
+  .hero {
+    text-align:center;
+    padding:64px 28px 8px;
+  }
+
+  .eyebrow-pill {
+    display:inline-block;
+    background:#2a1a18;
+    color:#e0857a;
+    font-size:12px;
+    padding:4px 12px;
+    border-radius:20px;
+    margin-bottom:16px;
+  }
+
+  .hero h1 {
+    font-size:26px;
+    font-weight:600;
+    margin:0 0 8px;
+    color:#eee;
+  }
+
+  .hero p {
+    font-size:14px;
+    color:#999;
+    max-width:420px;
+    margin:0 auto;
+  }
+
+  /* pricing cards */
+  .plans {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:16px;
+    padding:48px 48px 8px;
+    max-width:900px;
+    width:100%;
+    margin:0 auto;
+    flex:1;
+  }
+
+  .plan-card {
+    background:#1a1a1a;
+    border-radius:12px;
+    border:0.5px solid #2a2a2a;
+    padding:22px 18px;
+    text-align:center;
+    filter:grayscale(0.3);
+    opacity:0.75;
+    position:relative;
+    transition:all 0.2s ease;
+  }
+
+  .plan-card:hover {
+    border-color:#e0574a;
+    transform:translateY(-2px);
+  }
+
+  .plan-card.featured {
+    border:2px solid #e0574a;
+    filter:grayscale(0);
+    opacity:1;
+  }
+
+  .plan-card.featured:hover { 
+    background:#211816;
+  }
+
+  .popular-tag {
+    position:absolute;
+    top:-11px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#e0574a;
+    color:#fff;
+    font-size:11px;
+    padding:3px 10px;
+    border-radius:10px;
+    font-weight:600;
+    animation:slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown { from { opacity:0; transform:translateX(-50%) translateY(-10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+
+  .plan-name {
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:6px;
+    color:#eee;
+  }
+
+  .plan-price {
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:14px;
+    color:#eee;
+  }
+
+  .plan-features {
+    font-size:12px;
+    color:#777;
+    line-height:1.6;
+  }
+
+  /* cta */
+  .pricing-cta {
+    text-align:center;
+    padding:32px 28px 64px;
+  }
+
+  .notify-btn {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:12px 26px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background 0.2s ease, transform 0.1s ease;
+  }
+
+  .notify-btn:hover { background:#c9483d; }
+  .notify-btn:active { transform:scale(0.98); }
+  .notify-btn:focus { outline:2px solid #e0857a; outline-offset:2px; }
+
+  .navlink {
+    text-decoration:none;
+    color:inherit;
+    transition:color 0.2s ease;
+  }
+  .navlink:hover { color:#e0857a; }
+  .navlink:focus { outline:2px solid #e0574a; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<div id="page">
+
+  <div class="navbar-row">
+    <a href="/" class="brand">Debate Me <span>AI</span></a>
+    <div class="navlinks">
+      <a href="/" class="navlink">Homepage</a>
+      <a href="/howitworks" class="navlink">How it works</a>
+      <a href="/topicarea" class="navlink">Topics</a>
+      <a href="/pricingpage" class="navlink current">Pricing</a>
+      <a href="/contactpage" class="navlink">Contact</a>
+    </div>
+    <a href="/topicarea" class="navbtn">Start a debate</a>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow-pill">Coming soon</div>
+    <h1>Pricing is still being sharpened</h1>
+    <p>Debate Me AI is free to try while it's in early access. Paid plans launch soon.</p>
+  </div>
+
+  <div class="plans">
+    <div class="plan-card">
+      <div class="plan-name">Free</div>
+      <div class="plan-price">$0</div>
+      <div class="plan-features">3 debates a day<br>Standard intensity<br>Basic verdicts</div>
+    </div>
+
+    <div class="plan-card featured">
+      <div class="popular-tag">Most popular</div>
+      <div class="plan-name">Sparring</div>
+      <div class="plan-price">TBD</div>
+      <div class="plan-features">Unlimited debates<br>All intensity levels<br>Full verdict history</div>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-name">Teams</div>
+      <div class="plan-price">TBD</div>
+      <div class="plan-features">For debate clubs<br>Shared topic decks<br>Coach dashboard</div>
+    </div>
+  </div>
+
+  <div class="pricing-cta">
+    <button class="notify-btn">Get notified at launch</button>
+  </div>
+
+</div>
+
+</body>
+</html>

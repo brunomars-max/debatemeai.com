@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>How It Works</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/dist/tabler-icons.min.css">
+<style>
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+
+  body {
+    margin:0;
+    min-height:100vh;
+    background:#0a0a0a;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:#eee;
+  }
+
+  #page {
+    width:100%;
+    min-height:100vh;
+    background:#141414;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* navbar */
+  .navbar-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 48px;
+    border-bottom:0.5px solid #2a2a2a;
+  }
+
+  .brand { font-weight:600; font-size:17px; color:#fff; text-decoration:none; transition:opacity 0.2s ease; }
+  .brand:hover { opacity:0.8; }
+  .brand:focus { outline:2px solid #e0857a; border-radius:4px; }
+  .brand span { color:#e0574a; }
+
+  .navlinks { display:flex; gap:24px; font-size:13px; color:#999; }
+  .navlinks a { color:#999; text-decoration:none; transition:color 0.2s ease; }
+  .navlinks a:hover { color:#e0857a; }
+  .navlinks .current { color:#e0857a; font-weight:500; }
+  .navlinks a:focus { outline:2px solid #e0574a; border-radius:4px; }
+
+  .navbtn {
+    background:#e0574a;
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+    transition:background 0.2s ease, transform 0.1s ease;
+    display:inline-block;
+  }
+
+  .navbtn:hover { background:#c9483d; }
+  .navbtn:active { transform:scale(0.98); }
+  .navbtn:focus { outline:2px solid #e0857a; outline-offset:2px; }
+
+  /* hero */
+  .hero {
+    text-align:center;
+    padding:56px 28px 12px;
+  }
+
+  .hero h1 {
+    font-size:26px;
+    font-weight:600;
+    margin:0 0 8px;
+    color:#eee;
+  }
+
+  .hero p {
+    font-size:14px;
+    color:#999;
+    max-width:420px;
+    margin:0 auto;
+  }
+
+  /* steps */
+  .steps-wrap {
+    max-width:560px;
+    width:100%;
+    margin:0 auto;
+    padding:32px 20px 64px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+
+  .step {
+    display:flex;
+    gap:18px;
+    padding-bottom:28px;
+    position:relative;
+  }
+
+  .step:last-child { padding-bottom:0; }
+
+  .step-num {
+    flex-shrink:0;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#2a1a18;
+    color:#e0857a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+    font-size:14px;
+    z-index:1;
+    transition:background 0.2s ease, color 0.2s ease;
+  }
+
+  .step-num.final {
+    background:#14201c;
+    color:#7ad9b0;
+  }
+
+  .step-line {
+    position:absolute;
+    left:17px;
+    top:36px;
+    bottom:-8px;
+    width:1px;
+    background:#2a2a2a;
+    transition:background 0.3s ease;
+  }
+
+  .step h3 {
+    font-size:15px;
+    font-weight:600;
+    margin:0 0 4px;
+    color:#eee;
+    transition:color 0.2s ease;
+  }
+
+  .step p {
+    font-size:13px;
+    color:#999;
+    line-height:1.6;
+    margin:0;
+  }
+
+  .step:hover .step-num:not(.final) {
+    background:#3d2925;
+    color:#e0857a;
+  }
+
+  .step:hover .step-line { background:#e0574a; }
+
+  @media (max-width:700px) {
+    .navlinks { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="page">
+
+  <div class="navbar-row">
+    <a href="/" class="brand">Debate Me <span>AI</span></a>
+    <div class="navlinks">
+      <a href="/contactpage">Homepage</a>
+      <a href="/how it works" class="current">How it works</a>
+      <a href="/topicarea">Topics</a>
+      <a href="/pricingpage">Pricing</a>
+      <a href="/contactpage">Contact</a>
+    </div>
+    <a href="/topicarea" class="navbtn">Start a debate</a>
+  </div>
+
+  <div class="hero">
+    <h1>How it works</h1>
+    <p>Four steps between a half-formed opinion and an argument that actually holds up.</p>
+  </div>
+
+  <div class="steps-wrap">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-line"></div>
+      <div>
+        <h3>State your position</h3>
+        <p>Type what you actually believe, in your own words. Any topic works, from casual takes to competition prep.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-line"></div>
+      <div>
+        <h3>Pick the intensity</h3>
+        <p>Gentle for a first try, firm but fair for regular practice, or relentless if you want a real fight.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-line"></div>
+      <div>
+        <h3>Go back and forth</h3>
+        <p>It argues the strongest opposite case it can. You defend, it pushes back again. No agreeing, no letting you coast.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num final">4</div>
+      <div>
+        <h3>Get your verdict</h3>
+        <p>End the debate anytime for an honest score: your strongest point, your weakest, and one way to argue it better next time.</p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

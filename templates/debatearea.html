@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      * { box-sizing:border-box; }
+
+      body {
+        margin:0;
+        min-height:100vh;
+        display:flex;
+        justify-content:center;
+        padding:40px 20px;
+        background:#0a0a0a;
+        font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color:#eee;
+      }
+
+      #page-wrap {
+        max-width:900px;
+        width:100%;
+        margin:0 auto;
+        background:#141414;
+        border-radius:16px;
+        overflow:hidden;
+      }
+
+      /* top bar */
+      .top-bar {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:16px 28px;
+        border-bottom:0.5px solid #2a2a2a;
+      }
+
+      .brand { font-weight:600; font-size:17px; color:#fff; }
+      .brand span { color:#e0574a; }
+
+      .top-bar-right { display:flex; align-items:center; gap:10px; }
+
+      .intensity-badge {
+        background:#2a1a18;
+        color:#e0857a;
+        font-size:11px;
+        padding:4px 10px;
+        border-radius:8px;
+        font-weight:600;
+      }
+
+      /* position */
+      .position-block {
+        padding:20px 28px 4px;
+      }
+
+      .position-label {
+        font-size:11px;
+        color:#777;
+        text-transform:uppercase;
+        letter-spacing:0.5px;
+        margin-bottom:4px;
+      }
+
+      .position-value {
+        font-size:15px;
+        font-weight:600;
+        color:#eee;
+      }
+
+      /* chat log */
+      .debate-log {
+        padding:20px 28px;
+        max-height:420px;
+        overflow-y:auto;
+        scroll-behavior:smooth;
+      }
+
+      .bubble {
+        border-radius:12px;
+        padding:14px 16px;
+        margin-bottom:14px;
+        font-size:14px;
+        max-width:85%;
+        line-height:1.55;
+        white-space:pre-wrap;
+      }
+
+      .bubble-ai {
+        background:#2a1414;
+        border:1px solid #4a1f1f;
+      }
+
+      .bubble-you {
+        background:#1c2a1c;
+        border:1px solid #2f4a2f;
+        margin-left:auto;
+      }
+
+      .bubble-tag {
+        font-size:11px;
+        margin-bottom:4px;
+      }
+
+      .bubble-ai .bubble-tag { color:#c78; }
+      .bubble-you .bubble-tag { color:#8c8; }
+
+      .bubble-thinking { opacity:0.6; font-style:italic; }
+      .bubble-error { border-color:#a33 !important; color:#e88; }
+
+      .prompt-box {
+        border:1px dashed #333;
+        border-radius:12px;
+        padding:12px 16px;
+        font-size:13px;
+        color:#666;
+        text-align:center;
+      }
+
+      /* feedback panel */
+      .feedback-panel {
+        display:none;
+        margin:0 28px 20px;
+        padding:16px 18px;
+        border:1px solid #2f3f4a;
+        background:#141c22;
+        border-radius:12px;
+        font-size:14px;
+        line-height:1.6;
+        white-space:pre-wrap;
+        max-height:340px;
+        overflow-y:auto;
+      }
+
+      .feedback-panel-title {
+        font-size:12px;
+        text-transform:uppercase;
+        letter-spacing:0.5px;
+        color:#7ab0e0;
+        font-weight:600;
+        margin-bottom:8px;
+      }
+
+      /* composer */
+      .composer {
+        padding:0 28px 24px;
+      }
+
+      #input {
+        width:100%;
+        background:#1c1c1c;
+        border:1px solid #333;
+        border-radius:10px;
+        padding:12px 14px;
+        font-size:14px;
+        color:#eee;
+        margin-bottom:10px;
+        outline:none;
+      }
+
+      #input::placeholder { color:#666; }
+      #input:focus { border-color:#e0574a; }
+
+      .composer-actions {
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+      }
+
+      #startBtn {
+        flex:1;
+        background:#e0574a;
+        color:#fff;
+        border:none;
+        padding:11px;
+        border-radius:10px;
+        font-size:14px;
+        font-weight:600;
+        cursor:pointer;
+      }
+
+      #startBtn:hover { background:#c9483d; }
+
+      #stopBtn {
+        flex:1;
+        background:#2a2a2a;
+        color:#ccc;
+        border:none;
+        padding:11px 18px;
+        border-radius:10px;
+        font-size:14px;
+        cursor:pointer;
+      }
+
+      #stopBtn:hover { background:#333; }
+
+      #stopBtn
+      {
+        display:none;
+      }
+
+      #endDebateBtn {
+        flex:1;
+        background:#22303a;
+        color:#9cc4e0;
+        border:1px solid #2f4a5a;
+        padding:11px;
+        border-radius:10px;
+        font-size:14px;
+        font-weight:600;
+        cursor:pointer;
+      }
+
+      #endDebateBtn:hover { background:#2a3c48; }
+
+      form {
+        display:flex;
+        gap:8px;
+        margin-top:10px;
+      }
+
+      form button {
+        background:#e0574a;
+        color:#fff;
+        border:none;
+        padding:11px 18px;
+        border-radius:10px;
+        font-size:14px;
+        font-weight:600;
+        cursor:pointer;
+        white-space:nowrap;
+      }
+
+      form button:hover { background:#c9483d; }
+      form button:disabled { background:#5a3530; cursor:not-allowed; }
+    </style>
+  </head>
+  <body>
+
+    <div id="page-wrap">
+
+      <div class="top-bar">
+        <div class="brand">Debate Me <span>AI</span></div>
+        <div class="top-bar-right">
+          <div class="intensity-badge" id="intensityBadge">Aggressive</div>
+        </div>
+      </div>
+
+      <div class="position-block">
+        <div class="position-label">Your position</div>
+        <div class="position-value" id="positionValue">Remote work is better than office work for most people</div>
+      </div>
+
+      <div class="debate-log" id="debateLog">
+        <!-- bubbles are injected here by JS, from localStorage on load and live as you chat -->
+      </div>
+
+      <div class="feedback-panel" id="feedbackPanel">
+        <div class="feedback-panel-title">Debate Coach Feedback</div>
+        <div id="feedbackText"></div>
+      </div>
+
+      <div class="composer">
+        <div class="composer-actions">
+          <button id="startBtn">Start listening</button>
+          <button id="stopBtn">Stop</button>
+          <button id="endDebateBtn" type="button">End debate &amp; get feedback</button>
+        </div>
+        <form id="submitform">
+          <input name="InputMessage" id="input" placeholder="Defend your position...">
+          <input name="userid" id="userid" type="hidden">
+          <input name="topic" id="topic" type="hidden">
+          <input name="position" id="position" type="hidden">
+          <input name="level" id="level" type="hidden">
+          <button id="submitbtn" type="button">submit</button>
+        </form>
+      </div>
+
+    </div>
+
+    <script>
+      let useridinput = document.getElementById("userid")
+      let topicinput = document.getElementById("topic")
+      let positioninput = document.getElementById("position")
+      let levelinput = document.getElementById("level")
+      let storeditems = JSON.parse(localStorage.getItem("playerinfo"))
+      let submitbtn = document.getElementById("submitbtn")
+      let submitform = document.getElementById("submitform")
+      let endDebateBtn = document.getElementById("endDebateBtn")
+
+      let debateLog = document.getElementById("debateLog")
+      let feedbackPanel = document.getElementById("feedbackPanel")
+      let feedbackText = document.getElementById("feedbackText")
+      let positionValue = document.getElementById("positionValue")
+      let intensityBadge = document.getElementById("intensityBadge")
+
+      submitbtn.addEventListener("click", triggersubmit)
+      endDebateBtn.addEventListener("click", endDebate)
+
+      useridinput.value = storeditems["userid"]
+      topicinput.value = storeditems["topic"]
+      positioninput.value = storeditems["position"]
+      levelinput.value = storeditems["level"]
+
+      // reflect the actual chosen position/level in the header instead of the hardcoded demo text
+      positionValue.textContent = storeditems["position"]
+      intensityBadge.textContent = storeditems["level"]
+
+      // ---------- persistence (client-side, no database yet) ----------
+      // one history array per userid, so different sessions on the same
+      // browser don't collide with each other
+      const HISTORY_KEY = "debateHistory_" + storeditems["userid"]
+
+      function loadHistory() {
+        let raw = localStorage.getItem(HISTORY_KEY)
+        return raw ? JSON.parse(raw) : []
+      }
+
+      function saveHistory(turns) {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(turns))
+      }
+
+      // ---------- rendering ----------
+      function scrollToBottom() {
+        debateLog.scrollTop = debateLog.scrollHeight
+      }
+
+      function addBubble(role, text, extraClass) {
+        let bubble = document.createElement("div")
+        bubble.className = "bubble " + (role === "user" ? "bubble-you" : "bubble-ai") + (extraClass ? " " + extraClass : "")
+        let tag = document.createElement("div")
+        tag.className = "bubble-tag"
+        tag.textContent = role === "user" ? "You" : "Debate Me AI"
+        let body = document.createElement("div")
+        body.textContent = text
+        bubble.appendChild(tag)
+        bubble.appendChild(body)
+        debateLog.appendChild(bubble)
+        scrollToBottom()
+        return bubble
+      }
+
+      function renderInitialState() {
+        debateLog.innerHTML = ""
+        let history = loadHistory()
+        if (history.length === 0) {
+          let promptBox = document.createElement("div")
+          promptBox.className = "prompt-box"
+          promptBox.textContent = "Type your response below to start the debate"
+          debateLog.appendChild(promptBox)
+          return
+        }
+        for (let turn of history) {
+          addBubble(turn.role, turn.message)
+        }
+      }
+
+      renderInitialState()
+
+      // ---------- sending a message ----------
+      async function triggersubmit()
+      {
+        let messageText = document.getElementById("input").value.trim()
+        if (!messageText) return
+
+        // clear the "type your response to start" placeholder the first time
+        let promptBox = debateLog.querySelector(".prompt-box")
+        if (promptBox) promptBox.remove()
+
+        // 1) show the user's bubble immediately and clear the input
+        addBubble("user", messageText)
+        document.getElementById("input").value = ""
+
+        // 2) optimistically save this turn so a refresh mid-request doesn't lose it
+        let history = loadHistory()
+        history.push({ role: "user", message: messageText })
+        saveHistory(history)
+
+        // 3) show a temporary "thinking" bubble while we wait on the server
+        let thinkingBubble = addBubble("ai", "Debate Me AI is thinking...", "bubble-thinking")
+
+        let data = {
+          "InputMessage": messageText,
+          "userid": storeditems["userid"],
+          "topic": storeditems["topic"],
+          "position": storeditems["position"],
+          "level": storeditems["level"]
+        }
+        let form = new FormData()
+        for (let key in data) {
+          form.append(key, data[key])
+        }
+
+        submitbtn.disabled = true
+
+        try {
+          let answer = await fetch("/debatearea", {
+            method: "POST",
+            body: form
+          })
+          let result = await answer.json()
+
+          // 4) swap the placeholder for the real reply
+          thinkingBubble.classList.remove("bubble-thinking")
+          thinkingBubble.querySelector("div:last-child").textContent = result.answer
+
+          // 5) the server returns the full running conversation - treat that
+          // as the source of truth so client and server never drift apart
+          if (result.conversation) {
+            saveHistory(result.conversation)
+          } else {
+            history.push({ role: "ai", message: result.answer })
+            saveHistory(history)
+          }
+        } catch (err) {
+          console.log("request failed", err)
+          thinkingBubble.classList.remove("bubble-thinking")
+          thinkingBubble.classList.add("bubble-error")
+          thinkingBubble.querySelector("div:last-child").textContent =
+            "Something went wrong reaching the debate opponent - check your connection and try again."
+        } finally {
+          submitbtn.disabled = false
+          scrollToBottom()
+        }
+      }
+
+      // allow pressing Enter in the input to submit too
+      document.getElementById("input").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault()
+          triggersubmit()
+        }
+      })
+
+      // ---------- feedback ----------
+      async function endDebate() {
+        let history = loadHistory()
+        if (history.length === 0) {
+          alert("Have at least one exchange before asking for feedback.")
+          return
+        }
+
+        endDebateBtn.disabled = true
+        endDebateBtn.textContent = "Getting feedback..."
+
+        let form = new FormData()
+        form.append("userid", storeditems["userid"])
+
+        try {
+          let response = await fetch("/feedback", {
+            method: "POST",
+            body: form
+          })
+          let result = await response.json()
+          feedbackText.textContent = result.feedback
+          feedbackPanel.style.display = "block"
+          feedbackPanel.scrollIntoView({ behavior: "smooth", block: "start" })
+        } catch (err) {
+          console.log("feedback request failed", err)
+          feedbackText.textContent = "Couldn't load feedback right now - try again in a moment."
+          feedbackPanel.style.display = "block"
+        } finally {
+          endDebateBtn.disabled = false
+          endDebateBtn.textContent = "End debate & get feedback"
+        }
+      }
+
+      // ---------- speech to text ----------
+      if (!(window.SpeechRecognition || window.webkitSpeechRecognition)) {
+        alert("please switch to chrome or update your browser")
+      }
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.continuous = true;
+      recognition.lang = "en-US";
+      // interim results stream partial guesses back immediately instead of
+      // waiting for the engine to be fully confident - this is what actually
+      // removes most of the perceived lag, recognition speed itself doesn't change
+      recognition.interimResults = true;
+
+      const input = document.getElementById("input");
+      const startBtn = document.getElementById("startBtn");
+      const stopBtn = document.getElementById("stopBtn");
+
+      let isListening = false;
+      let finalizedTranscript = "";
+
+      startBtn.addEventListener("click", startRecord);
+      stopBtn.addEventListener("click", stopRecord);
+      recognition.addEventListener("result", translateRecord);
+
+      // continuous recognition sessions can silently end on their own
+      // (timeouts, background noise, etc) - auto-restart so it doesn't
+      // just look like it "stopped listening" for no reason
+      recognition.addEventListener("end", function () {
+        if (isListening) {
+          recognition.start();
+        }
+      });
+
+      function startRecord() {
+        isListening = true;
+        finalizedTranscript = input.value ? input.value + " " : "";
+        recognition.start();
+        console.log("Ready to receive audio.");
+        stopBtn.style.display = "block"
+        startBtn.style.display = "none"
+      }
+      function stopRecord() {
+        isListening = false;
+        recognition.stop();
+        console.log("stopped record.");
+        stopBtn.style.display = "none"
+        startBtn.style.display = "block"
+      }
+      function translateRecord(info) {
+        let interimTranscript = "";
+        for (let i = info.resultIndex; i < info.results.length; i++) {
+          let piece = info.results[i][0].transcript;
+          if (info.results[i].isFinal) {
+            finalizedTranscript += piece + " ";
+          } else {
+            interimTranscript += piece;
+          }
+        }
+        // show finalized text immediately, with the still-unconfirmed part
+        // appended live so it feels instantaneous while you're talking
+        input.value = finalizedTranscript + interimTranscript;
+      }
+    </script>
+  </body>
+</html>
