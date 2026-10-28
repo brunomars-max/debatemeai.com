@@ -48,14 +48,13 @@ def debatearea():
         # Send the WHOLE conversation so far to the model, not just this message.
         answer = debatebot.ai_response(
             convo["turns"],
-            inputmessage,
             topic=convo["topic"],
             position=convo["position"],
             level=convo["level"],
         )
 
         # Record the AI's reply too, so the next turn has full context.
-        convo["turns"].append({"role": "ai", "message": answer})
+        convo["turns"].append({"role": "assistant", "message": answer})
 
         # Return the full updated conversation so the client can just overwrite
         # its localStorage copy instead of the two drifting out of sync.
