@@ -48,6 +48,7 @@ def debatearea():
         # Send the WHOLE conversation so far to the model, not just this message.
         answer = debatebot.ai_response(
             convo["turns"],
+            inputmessage,
             topic=convo["topic"],
             position=convo["position"],
             level=convo["level"],
