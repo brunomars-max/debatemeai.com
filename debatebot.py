@@ -32,7 +32,7 @@ FEEDBACK_SYSTEM_INSTRUCTIONS = (
 )
 
 
-def ai_response(conversation_history,new_message,topic=None, position=None, level=None):
+def ai_response(conversation_history,topic=None, position=None, level=None):
     """
     Sends the FULL conversation so far to the model so the model has memory of
     earlier turns, rather than only seeing the latest message.
@@ -46,7 +46,6 @@ def ai_response(conversation_history,new_message,topic=None, position=None, leve
             f"{position}. Intensity level: {level}."
         )
 
-    conversation_history.append({"role": "user", "message": new_message})
     response = client.responses.create(
     model="gpt-6-sol",  # Replace with your deployed model ID (e.g., gpt-6-sol or gpt-6.1-sol)
     input=conversation_history,
