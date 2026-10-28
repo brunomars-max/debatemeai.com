@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hello, World!</title>
+    <title>debate area!</title>
     <link rel="stylesheet" href="styles.css" />
     <style>
       * { box-sizing:border-box; }
@@ -409,7 +409,7 @@
           if (result.conversation) {
             saveHistory(result.conversation)
           } else {
-            history.push({ role: "ai", message: result.answer })
+            history.push({ role: "assistant", message: result.answer })
             saveHistory(history)
           }
         } catch (err) {
