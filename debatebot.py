@@ -1,9 +1,13 @@
-from google import genai
-from google.genai import types
+import os
+from openai import OpenAI
+
 
 # NOTE: put your real key here (or better, load it from an environment
 # variable) - never leave this checked into source control with a real key in it.
-client = genai.Client(api_key="AQ.Ab8RN6KNNyr-FrxUxTwAEC3eXxYvxnYsonYPxPMbdOQScOJGvQ")
+client = OpenAI(
+    api_key="",
+    base_url="https://sammytymax-2590-resource.services.ai.azure.com/openai/v1",
+)
 
 DEBATE_SYSTEM_INSTRUCTIONS = (
     "You are a sharp debate challenger. You always take up the position "
@@ -28,26 +32,9 @@ FEEDBACK_SYSTEM_INSTRUCTIONS = (
 )
 
 
-def _build_contents(conversation_history):
+def ai_response(conversation_history,new_message,topic=None, position=None, level=None):
     """
-    conversation_history is a list of turns like:
-        [{"role": "user", "message": "..."}, {"role": "ai", "message": "..."}]
-    Converts it into the multi-turn `contents` format the Gemini API expects,
-    so each new call includes the full running conversation, not just the
-    latest message.
-    """
-    contents = []
-    for turn in conversation_history:
-        role = "user" if turn["role"] == "user" else "model"
-        contents.append(
-            types.Content(role=role, parts=[types.Part(text=turn["message"])])
-        )
-    return contents
-
-
-def ai_response(conversation_history, topic=None, position=None, level=None):
-    """
-    Sends the FULL conversation so far to Gemini so the model has memory of
+    Sends the FULL conversation so far to the model so the model has memory of
     earlier turns, rather than only seeing the latest message.
     conversation_history should already include the user's newest message
     as the last entry.
@@ -59,22 +46,22 @@ def ai_response(conversation_history, topic=None, position=None, level=None):
             f"{position}. Intensity level: {level}."
         )
 
-    contents = _build_contents(conversation_history)
-
-    response = client.models.generate_content(
-        model="gemini-3.6-flash",
-        config=types.GenerateContentConfig(
-            max_output_tokens=1500,
-            system_instruction=system_instruction,
-        ),
-        contents=contents,
+    conversation_history.append({"role": "user", "message": new_message})
+    response = client.responses.create(
+    model="gpt-6-sol",  # Replace with your deployed model ID (e.g., gpt-6-sol or gpt-6.1-sol)
+    input=conversation_history,
+    instructions=system_instruction,
+    max_output_tokens=16384,
+    reasoning={
+        "effort": "low"  # Options: low, medium, max (gpt-6.1-sol defaults to medium)
+    }
     )
     return response.text
 
 
 def get_feedback(conversation_history, topic=None, position=None):
     """
-    Takes the full finished transcript and asks Gemini to act as a coach
+    Takes the full finished transcript and asks the model to act as a coach
     rather than an opponent, producing a scorecard-style critique instead
     of another rebuttal.
     """
@@ -90,12 +77,12 @@ def get_feedback(conversation_history, topic=None, position=None):
 
     prompt = f"{context}Here is the full debate transcript:\n\n{transcript_text}"
 
-    response = client.models.generate_content(
-        model="gemini-3.6-flash",
-        config=types.GenerateContentConfig(
-            max_output_tokens=1500,
-            system_instruction=FEEDBACK_SYSTEM_INSTRUCTIONS,
-        ),
-        contents=[prompt],
+    response = client.responses.create(
+        model="gpt-6-sol",  # Replace with your deployed model ID (e.g., gpt-6-sol or gpt-6.1-sol)
+        input=prompt,
+        max_output_tokens=16384,
+        reasoning={
+            "effort": "low"  # Options: low, medium, max (gpt-6.1-sol defaults to medium)
+        }
     )
     return response.text
